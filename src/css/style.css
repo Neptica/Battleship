@@ -1,0 +1,45 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.body__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background-color: black;
+  height: 100vh;
+  width: 100vw;
+}
+
+.main__menu {
+  background-color: blue;
+  position: fixed;
+  left: 0;
+  height: 100vh;
+  width: calc((100vw - 100vh) / 2);
+}
+
+.message__container {
+  background-color: green;
+  height: 20vh;
+  width: 100vh;
+
+  margin-top: 5vh;
+}
+
+.board__container {
+  background-color: yellow;
+  height: 70vh;
+  width: 70vh;
+}
+
+.options__container {
+  position: fixed;
+  right: 0;
+  height: 100vh;
+  width: calc((100vw - 100vh) / 2);
+  background-color: purple;
+}
