@@ -14,15 +14,18 @@
   width: 100vw;
 }
 
-.main__menu {
-  background-color: blue;
+#main__menu {
+  background-color: yellow;
   position: fixed;
   left: 0;
   height: 100vh;
   width: calc((100vw - 100vh) / 2);
 }
 
-.message__container {
+#message__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: green;
   height: 20vh;
   width: 100vh;
@@ -30,16 +33,34 @@
   margin-top: 5vh;
 }
 
-.board__container {
-  background-color: yellow;
+#board__container {
+  /* background-color: yellow; */
   height: 70vh;
   width: 70vh;
+
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  border: 20px ridge grey;
+  background-color: #fafaff;
 }
 
-.options__container {
+#options__container {
   position: fixed;
   right: 0;
   height: 100vh;
   width: calc((100vw - 100vh) / 2);
   background-color: purple;
+}
+
+.items {
+  background-color: lightblue;
+  justify-content: center;
+  box-sizing: content-box;
+  overflow: visible;
+}
+
+.ships {
+  background-color: blue;
+  z-index: 99;
 }
