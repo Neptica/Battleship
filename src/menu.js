@@ -1,6 +1,6 @@
 import p1Image from "./images/p1.jpg";
 import p2Image from "./images/p2.jpg";
-import pregameSetup from "./pregame.js";
+import { PubSub, waitForEvent } from "./PubSub.js";
 
 export default (function (menu, message) {
   let player1Input;
@@ -9,7 +9,7 @@ export default (function (menu, message) {
   let inputDiv;
   let inputDiv2;
 
-  function start() {
+  async function start() {
     menu.innerHTML = "";
 
     // Player 1
@@ -69,6 +69,7 @@ export default (function (menu, message) {
     begin.style.cssText = "height: 50%; width: 50%;";
     begin.addEventListener("click", checkPlayersReady);
     message.appendChild(begin);
+    return await waitForEvent("Confirmed Selection");
   }
 
   function checkPlayersReady() {
@@ -83,7 +84,10 @@ export default (function (menu, message) {
 
       inputDiv2.textContent = p2Name;
       inputDiv2.style.cssText = "text-align: center; font-size: 2rem;";
-      setTimeout(() => pregameSetup(p1Name, p2Name), 3000);
+      setTimeout(() => {
+        PubSub.publish("Confirmed Selection", [p1Name, p2Name]);
+        message.innerHTML = "";
+      }, 3000);
     } else {
       const error = document.getElementById("errorMessage");
       if (!error) {
