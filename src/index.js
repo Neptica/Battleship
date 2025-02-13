@@ -6,19 +6,19 @@ import "./css/style.css";
   const container = document.getElementById("body__container");
   const menuBoard = document.getElementById("main__menu");
   const msgContainer = document.getElementById("message__container");
-  const board = document.getElementById("board__container");
+  const boardTemplate = document.getElementById("board__container");
   const aside = document.getElementById("options__container");
 
-  const playerBoards = initializeBoard(board);
+  const playerBoardGUIs = initializeBoard(boardTemplate);
 
   const Menu = MenuController(menuBoard, msgContainer);
   const PreGame = PreGameController(msgContainer, aside);
 
   const players = await Menu.start();
-  container.replaceChild(playerBoards[0], board);
-  const p1ships = await PreGame.createShips(players[0], playerBoards[0]);
-  container.replaceChild(playerBoards[1], playerBoards[0]);
-  const p2ships = await PreGame.createShips(players[1], playerBoards[1]);
+  container.replaceChild(playerBoardGUIs[0], boardTemplate);
+  const p1ships = await PreGame.createShips(players[0], playerBoardGUIs[0]);
+  container.replaceChild(playerBoardGUIs[1], playerBoardGUIs[0]);
+  const p2ships = await PreGame.createShips(players[1], playerBoardGUIs[1]);
 
   console.log("Ships Placed", p1ships, p2ships);
 })();

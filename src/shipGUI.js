@@ -1,9 +1,12 @@
 export { shipGUI };
 function shipGUI() {
-  function battleShip(keyGrabContainer, gameBoard, length) {
+  function battleShip(keyGrabContainer, gameBoard, length, playerBoard) {
     const ship = document.createElement("div");
     let coordX;
     let coordY;
+    let lastRotation;
+    let lastX;
+    let lastY;
 
     ship.classList.add("ships");
     ship.dataset.length = length;
@@ -23,6 +26,7 @@ function shipGUI() {
 
     function move() {
       ship.style.position = "fixed";
+      ship.style.zIndex = "99";
       let oldBox = ship.getBoundingClientRect();
       if (coordX === undefined) {
         coordX = oldBox.x;
@@ -35,9 +39,9 @@ function shipGUI() {
       keyGrabContainer.addEventListener("keydown", rotate);
     }
 
-    function rotate(event) {
+    function rotate(event, skip = false) {
       // TODO: Add proper rotate that will deal well with battleship images
-      if (event.code == "KeyR") {
+      if (skip || event.code == "KeyR") {
         let oldBox = ship.getBoundingClientRect();
         let newWidth = oldBox.height;
         let newHeight = oldBox.width;
@@ -85,8 +89,6 @@ function shipGUI() {
         ship.style.left = event.clientX + "px";
         ship.style.top = event.clientY + "px";
       }
-
-      return ship;
     }
 
     function unSelect(event) {
@@ -94,6 +96,7 @@ function shipGUI() {
       ship.removeEventListener("mouseup", unSelect);
       keyGrabContainer.removeEventListener("mousemove", drag);
       keyGrabContainer.removeEventListener("keydown", rotate);
+      ship.style.zIndex = "auto";
 
       const underMouse = document.elementsFromPoint(
         event.clientX,
@@ -109,23 +112,43 @@ function shipGUI() {
         }
       }
 
-      let boardStyle = gameBoard.getBoundingClientRect();
-      let boxStyle = ship.getBoundingClientRect();
-      if (
-        tile != -1 &&
-        boardStyle.right > boxStyle.right &&
-        boardStyle.bottom > boxStyle.bottom
-      ) {
+      const rot = ship.dataset.rotation;
+      const len = ship.dataset.length;
+      let x = -1;
+      let y = -1;
+      const gridItems = gameBoard.querySelectorAll(".items");
+      for (let i = 0; i < gridItems.length; i++) {
+        if (gridItems[i] == tile) {
+          y = Math.floor(i / 10);
+          x = i % 10;
+          break;
+        }
+      }
+
+      playerBoard.removeShip(length, lastRotation, lastY, lastX); // remove to check validity of placement
+      const validPlacement = playerBoard.addShip(len, rot, y, x);
+      console.log(validPlacement);
+      if (tile != -1 && validPlacement) {
         let boxStyle = ship.getBoundingClientRect();
         tile.appendChild(ship);
         ship.style.position = "absolute";
         coordX = boxStyle.x;
         coordY = boxStyle.y;
+
+        lastRotation = rot;
+        lastY = y;
+        lastX = x;
       } else if (shipBank != -1) {
         shipBank.appendChild(ship);
         ship.style.position = "static";
+        lastY = -1;
+        lastX = -1;
       } else {
         if (ship.parentElement.id != "options__container") {
+          playerBoard.addShip(length, lastRotation, lastY, lastX); // replace removed ship
+          if (lastRotation && lastRotation != ship.dataset.rotation) {
+            rotate(undefined, true);
+          }
           ship.style.left = coordX + "px";
           ship.style.top = coordY + "px";
           ship.style.position = "absolute";
