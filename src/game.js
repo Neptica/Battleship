@@ -43,6 +43,8 @@ export default (function (
             ship.style.display = "block";
             sunkenShips[oppositeBoard] += 1;
             if (sunkenShips[oppositeBoard] == 5) {
+              const prevImg = playerImgs[oppositeBoard];
+              prevImg.classList.remove("active__turn");
               setTimeout(() => {
                 msgContainer.innerHTML = `You've sunken all of ${playerNames[currentBoard]}, ${playerNames[oppositeBoard]}! <br> You've Won!`;
                 PubSub.publish("Gameover", boardGUIs);

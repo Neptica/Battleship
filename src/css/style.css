@@ -29,7 +29,7 @@
 }
 
 .active__turn {
-  border: 5px solid black;
+  border: 2px solid black;
   /* box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); */
 }
 

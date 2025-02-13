@@ -10,29 +10,39 @@ import "./css/style.css";
   const boardTemplate = document.getElementById("board__container");
   const aside = document.getElementById("options__container");
 
-  const playerBoardGUIs = initializeBoard(boardTemplate);
+  while (true) {
+    const playerBoardGUIs = initializeBoard(boardTemplate);
 
-  const Menu = MenuController(menuBoard, msgContainer);
-  const PreGame = PreGameController(msgContainer, aside);
+    const Menu = MenuController(menuBoard, msgContainer);
+    const PreGame = PreGameController(msgContainer, aside);
 
-  const [players, playerImgs] = await Menu.start();
-  container.replaceChild(playerBoardGUIs[0], boardTemplate);
-  const p1ships = await PreGame.createShips(players[0], playerBoardGUIs[0]);
-  container.replaceChild(playerBoardGUIs[1], playerBoardGUIs[0]);
-  const p2ships = await PreGame.createShips(players[1], playerBoardGUIs[1]);
+    const [players, playerImgs] = await Menu.start();
+    container.replaceChild(playerBoardGUIs[0], boardTemplate);
+    const p1ships = await PreGame.createShips(players[0], playerBoardGUIs[0]);
+    container.replaceChild(playerBoardGUIs[1], playerBoardGUIs[0]);
+    const p2ships = await PreGame.createShips(players[1], playerBoardGUIs[1]);
 
-  const Game = GameController(
-    [p1ships, p2ships],
-    playerBoardGUIs,
-    players,
-    playerImgs,
-    container,
-    msgContainer,
-  );
-  Game.setup();
-  const resultingBoards = await Game.play();
-  container.innerHTML = boardTemplate;
-  msgContainer.innerHTML = "Game has been completed";
+    const Game = GameController(
+      [p1ships, p2ships],
+      playerBoardGUIs,
+      players,
+      playerImgs,
+      container,
+      msgContainer,
+    );
+    Game.setup();
+    const resultingBoards = await Game.play();
+    try {
+      container.replaceChild(boardTemplate, playerBoardGUIs[0]);
+    } catch (error) {
+      console.log(error);
+      container.replaceChild(boardTemplate, playerBoardGUIs[1]);
+    }
+    menuBoard.innerHTML = "";
+    msgContainer.innerHTML = "";
+    boardTemplate.innerHTML = "";
+    aside.innerHTML = "";
+  }
 })();
 
 function initializeBoard(grid) {
