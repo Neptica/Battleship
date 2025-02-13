@@ -1,13 +1,8 @@
 import { shipGUI } from "./shipGUI.js";
 import { PubSub, waitForEvent } from "./PubSub.js";
 
-export default (function (board, msgContainer, aside) {
-  // const menuBoard = document.getElementById("main__menu");
-  // const msgContainer = document.getElementById("message__container");
-  // const board = document.getElementById("board__container");
-  // const aside = document.getElementById("options__container");
-
-  async function createShips(player) {
+export default (function (msgContainer, aside) {
+  async function createShips(player, board) {
     const ships = initializeShips(board);
     ships.forEach(({ ship, freeze }) => aside.appendChild(ship));
 
@@ -22,11 +17,14 @@ export default (function (board, msgContainer, aside) {
     const button = document.createElement("button");
     button.classList.add("confirm");
     button.addEventListener("click", () => {
-      const allPlaced = getShipPositions(board);
-      if (allPlaced) {
+      const shipBitmap = getShipPositions(board);
+      console.log(shipBitmap);
+      if (shipBitmap) {
         freezeShips(ships);
         msgContainer.innerHTML = "";
-        PubSub.publish("All Ships Placed");
+        PubSub.publish("All Ships Placed", shipBitmap);
+      } else {
+        instruction.textContent = `I'm not accepting this garbage, ${player}`;
       }
     });
     button.textContent = "Confirm Ship Positions";
@@ -35,36 +33,51 @@ export default (function (board, msgContainer, aside) {
     div.appendChild(instruction);
     div.appendChild(button);
     msgContainer.appendChild(div);
-    await waitForEvent("All Ships Placed");
-    return ships;
+    return await waitForEvent("All Ships Placed");
   }
 
   function getShipPositions(grid) {
-    let shipCoords = [];
     const shipElements = grid.querySelectorAll(".items div");
-
     if (shipElements.length != 5) {
+      console.log("Here");
       return false;
     }
+
+    let shipBitmap = Array.from({ length: 10 }, () => Array(10).fill(0));
+    console.log(shipBitmap, "START");
 
     const gridItems = grid.querySelectorAll(".items");
     for (let i = 0; i < shipElements.length; i++) {
       for (let j = 0; j < gridItems.length; j++) {
         if (gridItems[j] === shipElements[i].parentElement) {
-          console.log(
-            shipElements[i].dataset.rotation,
-            Math.floor(j / 10),
-            j % 10,
-          );
-          shipCoords.push([
-            shipElements[i].dataset.rotation,
-            Math.floor(j),
-            j % 10,
-          ]);
+          const rot = shipElements[i].dataset.rotation;
+          const len = shipElements[i].dataset.length;
+          let y = Math.floor(j / 10);
+          let x = j % 10;
+          console.log("Coords", y, x);
+          if (rot == "horizontal" && x + len - 1 < 10) {
+            for (let k = 0; k < len; k++) {
+              if (shipBitmap[y][x + k] == 0) {
+                shipBitmap[y][x + k] = 1;
+              } else {
+                return false;
+              }
+            }
+          } else if (y + len - 1 < 10) {
+            for (let k = 0; k < len; k++) {
+              if (shipBitmap[y + k][x] == 0) {
+                shipBitmap[y + k][x] = 1;
+              } else {
+                return false;
+              }
+            }
+          } else {
+            return false;
+          }
         }
       }
     }
-    return true;
+    return shipBitmap;
   }
 
   function initializeShips(board) {

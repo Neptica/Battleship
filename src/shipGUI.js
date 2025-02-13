@@ -1,6 +1,6 @@
 export { shipGUI };
 function shipGUI() {
-  function battleShip(keyGrabContainer, noFloatContainer, length) {
+  function battleShip(keyGrabContainer, gameBoard, length) {
     const ship = document.createElement("div");
     let coordX;
     let coordY;
@@ -36,6 +36,7 @@ function shipGUI() {
     }
 
     function rotate(event) {
+      // TODO: Add proper rotate that will deal well with battleship images
       if (event.code == "KeyR") {
         let oldBox = ship.getBoundingClientRect();
         let newWidth = oldBox.height;
@@ -62,7 +63,7 @@ function shipGUI() {
       for (let i = 0; i < underMouse.length; ++i) {
         if (underMouse[i].classList.contains("items")) {
           tile = underMouse[i];
-        } else if (underMouse[i].id == noFloatContainer.id) {
+        } else if (underMouse[i].id == gameBoard.id) {
           grid = underMouse[i];
         }
       }
@@ -99,18 +100,30 @@ function shipGUI() {
         event.clientY,
       );
       let tile = -1;
+      let shipBank = -1;
       for (let i = 0; i < underMouse.length; ++i) {
         if (underMouse[i].classList.contains("items")) {
           tile = underMouse[i];
+        } else if (underMouse[i].id == "options__container") {
+          shipBank = underMouse[i];
         }
       }
 
-      if (tile != -1) {
+      let boardStyle = gameBoard.getBoundingClientRect();
+      let boxStyle = ship.getBoundingClientRect();
+      if (
+        tile != -1 &&
+        boardStyle.right > boxStyle.right &&
+        boardStyle.bottom > boxStyle.bottom
+      ) {
         let boxStyle = ship.getBoundingClientRect();
         tile.appendChild(ship);
         ship.style.position = "absolute";
         coordX = boxStyle.x;
         coordY = boxStyle.y;
+      } else if (shipBank != -1) {
+        shipBank.appendChild(ship);
+        ship.style.position = "static";
       } else {
         if (ship.parentElement.id != "options__container") {
           ship.style.left = coordX + "px";

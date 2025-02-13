@@ -87,7 +87,7 @@ export default (function (menu, message) {
       setTimeout(() => {
         PubSub.publish("Confirmed Selection", [p1Name, p2Name]);
         message.innerHTML = "";
-      }, 3000);
+      }, 3);
     } else {
       const error = document.getElementById("errorMessage");
       if (!error) {

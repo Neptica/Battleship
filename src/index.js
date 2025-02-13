@@ -12,13 +12,15 @@ import "./css/style.css";
   const playerBoards = initializeBoard(board);
 
   const Menu = MenuController(menuBoard, msgContainer);
-  const PreGame = PreGameController(p1Board, msgContainer, aside);
+  const PreGame = PreGameController(msgContainer, aside);
 
   const players = await Menu.start();
-  const p1ships = await PreGame.createShips(players[0]);
+  container.replaceChild(playerBoards[0], board);
+  const p1ships = await PreGame.createShips(players[0], playerBoards[0]);
   container.replaceChild(playerBoards[1], playerBoards[0]);
-  const p2ships = await PreGame.createShips(players[1]);
-  console.log("Ships Placed");
+  const p2ships = await PreGame.createShips(players[1], playerBoards[1]);
+
+  console.log("Ships Placed", p1ships, p2ships);
 })();
 
 function initializeBoard(grid) {
