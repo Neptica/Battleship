@@ -1,5 +1,6 @@
 import MenuController from "./menu.js";
 import PreGameController from "./pregame.js";
+import GameController from "./game.js";
 import "./css/style.css";
 
 (async function () {
@@ -14,13 +15,24 @@ import "./css/style.css";
   const Menu = MenuController(menuBoard, msgContainer);
   const PreGame = PreGameController(msgContainer, aside);
 
-  const players = await Menu.start();
+  const [players, playerImgs] = await Menu.start();
   container.replaceChild(playerBoardGUIs[0], boardTemplate);
   const p1ships = await PreGame.createShips(players[0], playerBoardGUIs[0]);
   container.replaceChild(playerBoardGUIs[1], playerBoardGUIs[0]);
   const p2ships = await PreGame.createShips(players[1], playerBoardGUIs[1]);
 
-  console.log("Ships Placed", p1ships, p2ships);
+  const Game = GameController(
+    [p1ships, p2ships],
+    playerBoardGUIs,
+    players,
+    playerImgs,
+    container,
+    msgContainer,
+  );
+  Game.setup();
+  const resultingBoards = await Game.play();
+  container.innerHTML = boardTemplate;
+  msgContainer.innerHTML = "Game has been completed";
 })();
 
 function initializeBoard(grid) {

@@ -1,4 +1,4 @@
-export default (function (length) {
+export default (function (length, graphic) {
   let shipLength = length;
   let hits = 0;
 
@@ -13,5 +13,9 @@ export default (function (length) {
     return false;
   }
 
-  return { hit, isSunk };
+  function getGraphic() {
+    return graphic;
+  }
+
+  return { hit, isSunk, getGraphic };
 });

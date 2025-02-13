@@ -69,7 +69,7 @@ export default (function (menu, message) {
     begin.style.cssText = "height: 50%; width: 50%;";
     begin.addEventListener("click", checkPlayersReady);
     message.appendChild(begin);
-    return await waitForEvent("Confirmed Selection");
+    return [await waitForEvent("Confirmed Selection"), [img, img2]];
   }
 
   function checkPlayersReady() {

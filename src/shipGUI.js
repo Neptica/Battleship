@@ -126,7 +126,7 @@ function shipGUI() {
       }
 
       playerBoard.removeShip(length, lastRotation, lastY, lastX); // remove to check validity of placement
-      const validPlacement = playerBoard.addShip(len, rot, y, x);
+      const validPlacement = playerBoard.addShip(len, rot, y, x, ship);
       console.log(validPlacement);
       if (tile != -1 && validPlacement) {
         let boxStyle = ship.getBoundingClientRect();
@@ -145,7 +145,7 @@ function shipGUI() {
         lastX = -1;
       } else {
         if (ship.parentElement.id != "options__container") {
-          playerBoard.addShip(length, lastRotation, lastY, lastX); // replace removed ship
+          playerBoard.addShip(length, lastRotation, lastY, lastX, ship); // replace removed ship
           if (lastRotation && lastRotation != ship.dataset.rotation) {
             rotate(undefined, true);
           }
