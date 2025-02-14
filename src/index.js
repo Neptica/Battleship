@@ -10,15 +10,15 @@ import "./css/style.css";
   const msgContainer = document.getElementById("message__container");
   const boardTemplate = document.getElementById("board__container");
   const aside = document.getElementById("options__container");
-
   const blinder = createBlinder(boardTemplate, container);
-  const playerBoardGUIs = initializeBoard(boardTemplate);
-
-  const Menu = MenuController(menuBoard, msgContainer);
-  const PreGame = PreGameController(msgContainer, aside);
 
   let again = true;
   while (again) {
+    const playerBoardGUIs = initializeBoard(boardTemplate);
+
+    const Menu = MenuController(menuBoard, msgContainer);
+    const PreGame = PreGameController(msgContainer, aside);
+
     const [players, playerImgs] = await Menu.start();
     playerImgs[0].classList.add("turn");
     container.replaceChild(playerBoardGUIs[0], boardTemplate);
@@ -49,7 +49,6 @@ import "./css/style.css";
     try {
       container.replaceChild(boardTemplate, playerBoardGUIs[0]);
     } catch (error) {
-      console.log(error);
       container.replaceChild(boardTemplate, playerBoardGUIs[1]);
     }
 
@@ -101,7 +100,7 @@ async function playAgain(msgBoard, winnerHighlight) {
 
   button.addEventListener("click", () => {
     winnerHighlight.classList.remove("winner");
-    PubSub.publish("Play Again");
+    PubSub.publish("Play Again", true);
   });
   return await waitForEvent("Play Again");
 }

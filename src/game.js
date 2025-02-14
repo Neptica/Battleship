@@ -50,8 +50,9 @@ export default (function (
               prevImg.classList.remove("turn");
               prevImg.classList.add("winner");
               won = true;
+              msgContainer.innerHTML = `You've sunken all of ${playerNames[currentBoard]}'s ships, ${playerNames[oppositeBoard]}! <br> You've Won!`;
               setTimeout(() => {
-                msgContainer.innerHTML = `You've sunken all of ${playerNames[currentBoard]}, ${playerNames[oppositeBoard]}! <br> You've Won!`;
+                msgContainer.innerHTML = "";
                 PubSub.publish("Gameover", prevImg);
                 container.removeChild(blinder);
                 return;
@@ -76,13 +77,13 @@ export default (function (
               nextImg.classList.add("turn");
               nextImg.style.transform = "scale(1.1)";
               prevImg.classList.remove("turn");
-              prevImg.style.transform = "scale(1.1)";
+              prevImg.style.transform = "scale(1)";
               nImg.style.transform = "scale(1.1)";
               pImg.style.transform = "scale(1)";
               currentBoard = oppositeBoard;
               container.removeChild(blinder);
               msgContainer.innerHTML = `Bombs away, ${nextName}!`;
-            }, 3000);
+            }, 30);
           }
         } else {
           let currName = playerNames[(currentBoard + 1) % 2];
@@ -90,7 +91,7 @@ export default (function (
           setTimeout(() => {
             msgContainer.innerHTML = `Fire at an open square this time, ${currName}`;
             container.removeChild(blinder);
-          }, 3000);
+          }, 30);
         }
         // WHY DOESN'T THE BELOW WORK??
         // setTimeout(
