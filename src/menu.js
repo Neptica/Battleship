@@ -14,10 +14,13 @@ export default (function (menu, message) {
 
     // Player 1
     const p1 = document.createElement("div");
+    const imgContainer = document.createElement("div");
     const img = document.createElement("img");
     inputDiv = document.createElement("div");
     const label = document.createElement("label");
     player1Input = document.createElement("input");
+
+    imgContainer.classList.add("img__container");
 
     p1.classList.add("playerDiv");
 
@@ -34,16 +37,20 @@ export default (function (menu, message) {
 
     inputDiv.appendChild(label);
     inputDiv.appendChild(player1Input);
-    p1.appendChild(img);
+    imgContainer.appendChild(img);
+    p1.appendChild(imgContainer);
     p1.appendChild(inputDiv);
     menu.appendChild(p1);
 
     // Player 2
     const p2 = document.createElement("div");
+    const img2Container = document.createElement("div");
     const img2 = document.createElement("img");
     inputDiv2 = document.createElement("div");
     const label2 = document.createElement("label");
     player2Input = document.createElement("input");
+
+    img2Container.classList.add("img__container");
 
     p2.classList.add("playerDiv");
 
@@ -60,7 +67,8 @@ export default (function (menu, message) {
 
     inputDiv2.appendChild(label2);
     inputDiv2.appendChild(player2Input);
-    p2.appendChild(img2);
+    img2Container.appendChild(img2);
+    p2.appendChild(img2Container);
     p2.appendChild(inputDiv2);
     menu.appendChild(p2);
 
@@ -69,7 +77,10 @@ export default (function (menu, message) {
     begin.style.cssText = "height: 50%; width: 50%;";
     begin.addEventListener("click", checkPlayersReady);
     message.appendChild(begin);
-    return [await waitForEvent("Confirmed Selection"), [img, img2]];
+    return [
+      await waitForEvent("Confirmed Selection"),
+      [imgContainer, img2Container],
+    ];
   }
 
   function checkPlayersReady() {
@@ -80,10 +91,10 @@ export default (function (menu, message) {
       message.textContent = "Let's Play BattleShip!";
 
       inputDiv.textContent = p1Name;
-      inputDiv.style.cssText = "text-align: center; font-size: 2rem;";
+      inputDiv.classList.add("playerTitles");
 
       inputDiv2.textContent = p2Name;
-      inputDiv2.style.cssText = "text-align: center; font-size: 2rem;";
+      inputDiv2.classList.add("playerTitles");
       setTimeout(() => {
         PubSub.publish("Confirmed Selection", [p1Name, p2Name]);
         message.innerHTML = "";

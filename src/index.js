@@ -1,6 +1,7 @@
 import MenuController from "./menu.js";
 import PreGameController from "./pregame.js";
 import GameController from "./game.js";
+import { PubSub, waitForEvent } from "./PubSub.js";
 import "./css/style.css";
 
 (async function () {
@@ -11,17 +12,27 @@ import "./css/style.css";
   const aside = document.getElementById("options__container");
 
   const blinder = createBlinder(boardTemplate, container);
-  while (true) {
-    const playerBoardGUIs = initializeBoard(boardTemplate);
+  const playerBoardGUIs = initializeBoard(boardTemplate);
 
-    const Menu = MenuController(menuBoard, msgContainer);
-    const PreGame = PreGameController(msgContainer, aside);
+  const Menu = MenuController(menuBoard, msgContainer);
+  const PreGame = PreGameController(msgContainer, aside);
 
+  let again = true;
+  while (again) {
     const [players, playerImgs] = await Menu.start();
+    playerImgs[0].classList.add("turn");
     container.replaceChild(playerBoardGUIs[0], boardTemplate);
-    const p1ships = await PreGame.createShips(players[0], playerBoardGUIs[0]);
+    const p1ships = await PreGame.createShips(
+      players[0],
+      playerBoardGUIs[0],
+      playerImgs[0],
+    );
     container.replaceChild(playerBoardGUIs[1], playerBoardGUIs[0]);
-    const p2ships = await PreGame.createShips(players[1], playerBoardGUIs[1]);
+    const p2ships = await PreGame.createShips(
+      players[1],
+      playerBoardGUIs[1],
+      playerImgs[1],
+    );
 
     const Game = GameController(
       [p1ships, p2ships],
@@ -34,13 +45,15 @@ import "./css/style.css";
     );
 
     Game.setup();
-    const resultingBoards = await Game.play();
+    const winnerImgContainer = await Game.play();
     try {
       container.replaceChild(boardTemplate, playerBoardGUIs[0]);
     } catch (error) {
       console.log(error);
       container.replaceChild(boardTemplate, playerBoardGUIs[1]);
     }
+
+    again = await playAgain(msgContainer, winnerImgContainer);
     menuBoard.innerHTML = "";
     msgContainer.innerHTML = "";
     boardTemplate.innerHTML = "";
@@ -74,4 +87,21 @@ function createBlinder(board) {
   blinder.style.height = settings.height + "px";
   blinder.style.width = settings.width + "px";
   return blinder;
+}
+
+async function playAgain(msgBoard, winnerHighlight) {
+  const header = document.createElement("h1");
+  const button = document.createElement("button");
+  header.textContent = "Would you like to play another game?";
+  button.textContent = "Play Again";
+  button.style.height = "50px";
+  button.style.width = "350px";
+  msgBoard.appendChild(header);
+  msgBoard.appendChild(button);
+
+  button.addEventListener("click", () => {
+    winnerHighlight.classList.remove("winner");
+    PubSub.publish("Play Again");
+  });
+  return await waitForEvent("Play Again");
 }

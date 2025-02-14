@@ -28,23 +28,27 @@
   align-items: center;
 }
 
-.active__turn {
-  border: 2px solid black;
-  /* box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); */
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 .playerDiv {
   width: 70%;
 }
 
+.playerTitles {
+  text-align: center;
+  font-size: 2rem;
+  padding-top: 16px;
+}
+
 .playerIcon {
+  height: 100%;
   width: 100%;
+  aspect-ratio: 1 / 1;
+  z-index: 100;
+  border-radius: 8px;
+}
+
+.img__container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
 }
 
 .input {
@@ -76,6 +80,12 @@
   background-color: #fafaff;
 }
 
+.block {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 999;
+}
+
 #options__container {
   position: fixed;
   right: 0;
@@ -94,4 +104,115 @@
 .ships {
   background-color: blue;
   z-index: 99;
+}
+
+/* Player Icon Animations */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.turn {
+  position: relative;
+  z-index: -1;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: sans-serif;
+  font-weight: bold;
+
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: 4;
+    left: -50%;
+    top: -50%;
+    width: 200%;
+    height: 200%;
+    background-color: purple;
+    background-repeat: no-repeat;
+    background-size:
+      50% 50%,
+      50% 50%;
+    background-position:
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%;
+    background-image:
+      linear-gradient(#000000, #000000), linear-gradient(#ffffff, #ffffff),
+      linear-gradient(#000000, #000000), linear-gradient(#ffffff, #ffffff);
+    animation: rotate 4s linear infinite;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 6px;
+    top: 6px;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+    background: white;
+    border-radius: 5px;
+  }
+}
+
+.winner {
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: sans-serif;
+  font-weight: bold;
+
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: 4;
+    left: -50%;
+    top: -50%;
+    width: 200%;
+    height: 200%;
+    background-color: purple;
+    background-repeat: no-repeat;
+    background-size:
+      50% 50%,
+      50% 50%;
+    background-position:
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%;
+    background-image:
+      linear-gradient(#fff100, #f1e516), linear-gradient(#ffffff, #ffffff),
+      linear-gradient(#fff100, #f1e516), linear-gradient(#ffffff, #ffffff);
+    animation: rotate 4s linear infinite;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 6px;
+    top: 6px;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+    background: white;
+    border-radius: 5px;
+  }
 }

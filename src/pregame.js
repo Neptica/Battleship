@@ -3,7 +3,11 @@ import GameBoard from "./gameboard.js";
 import { PubSub, waitForEvent } from "./PubSub.js";
 
 export default (function (msgContainer, aside) {
-  async function createShips(player, boardGUI) {
+  async function createShips(player, boardGUI, imgContainer) {
+    imgContainer.classList.add("turn");
+    const img = imgContainer.firstElementChild;
+    imgContainer.style.transform = "scale(1.1)";
+    img.style.transform = "scale(1.1)";
     let playerBoard = GameBoard();
     const ships = initializeShips(boardGUI, playerBoard);
     ships.forEach(({ ship, freeze }) => aside.appendChild(ship));
@@ -23,6 +27,9 @@ export default (function (msgContainer, aside) {
       if (shipBitmap) {
         freezeShips(ships);
         msgContainer.innerHTML = "";
+        imgContainer.classList.remove("turn");
+        imgContainer.style.transform = "scale(1)";
+        img.style.transform = "scale(1)";
         PubSub.publish("All Ships Placed", playerBoard);
       } else {
         instruction.textContent = `Please place all of your battleships, ${player}`;
