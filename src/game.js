@@ -6,6 +6,7 @@ export default (function (
   playerImgs,
   container,
   msgContainer,
+  blinder,
 ) {
   let currentBoard = 1;
   let sunkenShips = [0, 0];
@@ -25,6 +26,7 @@ export default (function (
   }
 
   function shoot() {
+    container.append(blinder);
     const tileContainer = this.parentNode;
     const tiles = tileContainer.querySelectorAll(".items");
     for (let i = 0; i < tiles.length; ++i) {
@@ -45,11 +47,12 @@ export default (function (
             if (sunkenShips[oppositeBoard] == 5) {
               const prevImg = playerImgs[oppositeBoard];
               prevImg.classList.remove("active__turn");
+              prevImg.classList.add("game__winner");
               setTimeout(() => {
                 msgContainer.innerHTML = `You've sunken all of ${playerNames[currentBoard]}, ${playerNames[oppositeBoard]}! <br> You've Won!`;
-                PubSub.publish("Gameover", boardGUIs);
-              }, 4000);
-              return;
+                PubSub.publish("Gameover", prevImg);
+                container.removeChild(blinder);
+              }, 3000);
             }
           } else if (results[0]) {
             this.style.backgroundColor = "red";
@@ -67,15 +70,15 @@ export default (function (
             nextImg.classList.add("active__turn");
             prevImg.classList.remove("active__turn");
             currentBoard = oppositeBoard;
-          }, 1000);
+            container.removeChild(blinder);
+          }, 3000);
         } else {
           let currName = playerNames[(currentBoard + 1) % 2];
           msgContainer.innerHTML = `But ${currName}, we've already shot there`;
-          setTimeout(
-            () =>
-              (msgContainer.innerHTML = `Fire at an open square this time, ${currName}`),
-            900,
-          );
+          setTimeout(() => {
+            msgContainer.innerHTML = `Fire at an open square this time, ${currName}`;
+            container.removeChild(blinder);
+          }, 3000);
         }
         // WHY DOESN'T THE BELOW WORK??
         // setTimeout(

@@ -10,6 +10,7 @@ import "./css/style.css";
   const boardTemplate = document.getElementById("board__container");
   const aside = document.getElementById("options__container");
 
+  const blinder = createBlinder(boardTemplate, container);
   while (true) {
     const playerBoardGUIs = initializeBoard(boardTemplate);
 
@@ -29,7 +30,9 @@ import "./css/style.css";
       playerImgs,
       container,
       msgContainer,
+      blinder,
     );
+
     Game.setup();
     const resultingBoards = await Game.play();
     try {
@@ -58,4 +61,17 @@ function initializeBoard(grid) {
   p2Board.id = grid.id;
 
   return [p1Board, p2Board];
+}
+
+function createBlinder(board) {
+  const settings = board.getBoundingClientRect();
+  console.log(settings.left, settings.top, settings.height, settings.width);
+  const blinder = document.createElement("div");
+  blinder.classList.add("block");
+  blinder.style.position = "absolute";
+  blinder.style.left = settings.left + "px";
+  blinder.style.top = settings.top + "px";
+  blinder.style.height = settings.height + "px";
+  blinder.style.width = settings.width + "px";
+  return blinder;
 }
