@@ -1,7 +1,7 @@
 import MenuController from "./menu.js";
 import PreGameController from "./pregame.js";
 import GameController from "./game.js";
-import { PubSub, waitForEvent } from "./PubSub.js";
+import PlayAgain from "./playAgain.js";
 import "./css/style.css";
 
 (async function () {
@@ -46,13 +46,22 @@ import "./css/style.css";
 
     Game.setup();
     const winnerImgContainer = await Game.play();
+
+    again = await PlayAgain(
+      msgContainer,
+      winnerImgContainer,
+      playerBoardGUIs,
+      [playerImgs[0].firstChild, playerImgs[1].firstChild],
+      container,
+    );
+
     try {
       container.replaceChild(boardTemplate, playerBoardGUIs[0]);
     } catch (error) {
       container.replaceChild(boardTemplate, playerBoardGUIs[1]);
     }
+    container.removeChild(blinder);
 
-    again = await playAgain(msgContainer, winnerImgContainer);
     menuBoard.innerHTML = "";
     msgContainer.innerHTML = "";
     boardTemplate.innerHTML = "";
@@ -86,21 +95,4 @@ function createBlinder(board) {
   blinder.style.height = settings.height + "px";
   blinder.style.width = settings.width + "px";
   return blinder;
-}
-
-async function playAgain(msgBoard, winnerHighlight) {
-  const header = document.createElement("h1");
-  const button = document.createElement("button");
-  header.textContent = "Would you like to play another game?";
-  button.textContent = "Play Again";
-  button.style.height = "50px";
-  button.style.width = "350px";
-  msgBoard.appendChild(header);
-  msgBoard.appendChild(button);
-
-  button.addEventListener("click", () => {
-    winnerHighlight.classList.remove("winner");
-    PubSub.publish("Play Again", true);
-  });
-  return await waitForEvent("Play Again");
 }

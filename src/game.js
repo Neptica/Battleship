@@ -54,7 +54,6 @@ export default (function (
               setTimeout(() => {
                 msgContainer.innerHTML = "";
                 PubSub.publish("Gameover", prevImg);
-                container.removeChild(blinder);
                 return;
               }, 3000);
             }
