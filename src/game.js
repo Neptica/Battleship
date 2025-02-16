@@ -6,7 +6,6 @@ export default (function (
   playerImgs,
   container,
   msgContainer,
-  blinder,
 ) {
   let currentBoard = 1;
   let sunkenShips = [0, 0];
@@ -26,7 +25,7 @@ export default (function (
   }
 
   function shoot() {
-    container.append(blinder);
+    boardGUIs[currentBoard].style.zIndex = 1;
     const tileContainer = this.parentNode;
     const tiles = tileContainer.querySelectorAll(".items");
     for (let i = 0; i < tiles.length; ++i) {
@@ -46,6 +45,8 @@ export default (function (
             ship.style.display = "block";
             sunkenShips[oppositeBoard] += 1;
             if (sunkenShips[oppositeBoard] == 5) {
+              curr.style.zIndex = 1;
+              next.style.zIndex = 1;
               const prevImg = playerImgs[oppositeBoard];
               prevImg.classList.remove("turn");
               prevImg.classList.add("winner");
@@ -79,8 +80,8 @@ export default (function (
               prevImg.style.transform = "scale(1)";
               nImg.style.transform = "scale(1.1)";
               pImg.style.transform = "scale(1)";
+              boardGUIs[currentBoard].style.zIndex = 15;
               currentBoard = oppositeBoard;
-              container.removeChild(blinder);
               msgContainer.innerHTML = `Bombs away, ${nextName}!`;
             }, 30);
           }
@@ -89,18 +90,9 @@ export default (function (
           msgContainer.innerHTML = `But ${currName}, we've already shot there`;
           setTimeout(() => {
             msgContainer.innerHTML = `Fire at an open square this time, ${currName}`;
-            container.removeChild(blinder);
+            boardGUIs[currentBoard].style.zIndex = 15;
           }, 30);
         }
-        // WHY DOESN'T THE BELOW WORK??
-        // setTimeout(
-        //   () =>
-        //     container.replaceChild(
-        //       boardGUIs[nextBoard],
-        //       boardGUIs[currentBoard],
-        //     ),
-        //   5,
-        // );
       }
     }
   }

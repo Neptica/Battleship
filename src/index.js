@@ -11,6 +11,7 @@ import "./css/style.css";
   const boardTemplate = document.getElementById("board__container");
   const aside = document.getElementById("options__container");
   const blinder = createBlinder(boardTemplate, container);
+  container.append(blinder);
 
   let again = true;
   while (again) {
@@ -41,7 +42,6 @@ import "./css/style.css";
       playerImgs,
       container,
       msgContainer,
-      blinder,
     );
 
     Game.setup();
@@ -60,7 +60,7 @@ import "./css/style.css";
     } catch (error) {
       container.replaceChild(boardTemplate, playerBoardGUIs[1]);
     }
-    container.removeChild(blinder);
+    boardTemplate.style.zIndex = 15;
 
     menuBoard.innerHTML = "";
     msgContainer.innerHTML = "";
@@ -84,15 +84,8 @@ function initializeBoard(grid) {
   return [p1Board, p2Board];
 }
 
-function createBlinder(board) {
-  const settings = board.getBoundingClientRect();
-  console.log(settings.left, settings.top, settings.height, settings.width);
+function createBlinder() {
   const blinder = document.createElement("div");
   blinder.classList.add("block");
-  blinder.style.position = "absolute";
-  blinder.style.left = settings.left + "px";
-  blinder.style.top = settings.top + "px";
-  blinder.style.height = settings.height + "px";
-  blinder.style.width = settings.width + "px";
   return blinder;
 }
